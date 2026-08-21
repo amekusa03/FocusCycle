@@ -1,0 +1,25 @@
+# Qt Build outputs
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+Makefile
+.qmake.stash
+moc_*.cpp
+qrc_*.cpp
+moc_predefs.h
+FocusCycle
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.user
+*.swp
+*~
+
+# Build directory
+build/
+
+# Work directory
+memo/
