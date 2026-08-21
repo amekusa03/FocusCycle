@@ -33,6 +33,7 @@ private:
     CycleController*  m_ctrl                = nullptr;
     QSystemTrayIcon*  m_tray                = nullptr;
     QMenu*            m_menu                = nullptr;
+    QAction*          m_statusAction        = nullptr;
     QAction*          m_settingsAction      = nullptr;
     QAction*          m_completeWorkAction  = nullptr;
     QAction*          m_completeBreakAction = nullptr;

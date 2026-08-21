@@ -49,12 +49,21 @@ QMenu::item:selected {
     background-color: rgba(74,144,226,0.2);
     color: white;
 }
+QMenu::item:disabled {
+    color: #64b5f6;
+    font-weight: bold;
+}
 QMenu::separator {
     height: 1px;
     background: rgba(255,255,255,0.07);
     margin: 4px 12px;
 }
 )QSS");
+
+    m_statusAction = m_menu->addAction("");
+    m_statusAction->setEnabled(false);
+
+    m_menu->addSeparator();
 
     m_settingsAction = m_menu->addAction("");
     connect(m_settingsAction, &QAction::triggered,
@@ -166,11 +175,13 @@ void TrayIcon::updateStatus(AppState state, int seconds)
 
     QColor iconColor = systemColor;
     QString tooltipStr;
+    QString statusText;
 
     switch (state) {
     case AppState::WorkWait:
         iconColor = systemColor;
         tooltipStr = isJa ? "作業待ち" : "Waiting for Work";
+        statusText = isJa ? "⏱  作業待ち" : "⏱  Waiting for Work";
         setWorkActionEnabled(false);
         setBreakActionEnabled(false);
         break;
@@ -179,6 +190,8 @@ void TrayIcon::updateStatus(AppState state, int seconds)
         iconColor = systemColor;
         tooltipStr = isJa ? QString("作業中 %1").arg(formatTime(seconds))
                            : QString("Working %1").arg(formatTime(seconds));
+        statusText = isJa ? QString("⏱  作業中 %1").arg(formatTime(seconds))
+                           : QString("⏱  Working %1").arg(formatTime(seconds));
         setWorkActionEnabled(true);
         setBreakActionEnabled(false);
         break;
@@ -186,6 +199,7 @@ void TrayIcon::updateStatus(AppState state, int seconds)
     case AppState::BreakWait:
         iconColor = systemColor;
         tooltipStr = isJa ? "休憩待ち" : "Waiting for Break";
+        statusText = isJa ? "☕  休憩待ち" : "☕  Waiting for Break";
         setWorkActionEnabled(true);
         setBreakActionEnabled(false);
         break;
@@ -194,6 +208,8 @@ void TrayIcon::updateStatus(AppState state, int seconds)
         iconColor = QColor(255, 179, 0); // Yellow for break notification
         tooltipStr = isJa ? QString("休憩中 %1").arg(formatTime(seconds))
                            : QString("On Break %1").arg(formatTime(seconds));
+        statusText = isJa ? QString("☕  休憩中 %1").arg(formatTime(seconds))
+                           : QString("☕  On Break %1").arg(formatTime(seconds));
         setWorkActionEnabled(false);
         setBreakActionEnabled(true);
         break;
@@ -201,9 +217,14 @@ void TrayIcon::updateStatus(AppState state, int seconds)
     case AppState::CompanyBreak:
         iconColor = systemColor;
         tooltipStr = isJa ? "会社の休憩時間" : "Company Break";
+        statusText = isJa ? "🏢  会社の休憩時間" : "🏢  Company Break";
         setWorkActionEnabled(false);
         setBreakActionEnabled(false);
         break;
+    }
+
+    if (m_statusAction) {
+        m_statusAction->setText(statusText);
     }
 
     m_tray->setIcon(QIcon(makeIcon(iconColor)));
